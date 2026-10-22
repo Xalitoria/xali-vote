@@ -1,20 +1,15 @@
 import mc.xalitoria.gradle.Load
 import mc.xalitoria.gradle.RelativeLoad
 
-// Kotlin Multiplatform with a JVM target per platform: `common` is shared by both, `paper` and `velocity` are the
-// plugins. The Gradle plugin reads the api() dependencies of each target's source sets for its loader.
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("mc.xalitoria.minecraft")
-    // Not shading anything yet: the Gradle plugin only writes the loaders when the shadow plugin is applied.
     alias(libs.plugins.shadow)
 }
 
 group = "mc.xalitoria"
 version = "0.0.1"
-
-val kotlinVersion: String = libs.versions.kotlin.get()
 
 kotlin {
     jvmToolchain(25)
@@ -31,6 +26,7 @@ kotlin {
             "-Xcontext-sensitive-resolution",
             "-Xcollection-literals",
             "-Xname-based-destructuring=complete",
+            //"-Xreturn-value-checker=full",
         )
     }
 
@@ -43,7 +39,7 @@ kotlin {
             resources.setSrcDirs(listOf("common/resources"))
             dependsOn(commonMain)
             dependencies {
-                api("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
+                api(kotlin("stdlib"))
                 api(libs.kotlinx.coroutines)
                 api(libs.kotlinx.serialization)
                 api(libs.kaml)
@@ -56,13 +52,11 @@ kotlin {
             }
         }
 
-        val nuvotifier = files("libs/nuvotifier-2.7.3.jar")
-
         val paperMain by getting {
             dependsOn(sharedJvmMain)
             dependencies {
                 compileOnly(libs.paper.api)
-                compileOnly(nuvotifier)
+                compileOnly(libs.nuvotifier.universal)
                 api(libs.ktor.server.core)
                 api(libs.ktor.server.cio)
                 api(libs.ktor.server.content.negotiation)
@@ -74,12 +68,10 @@ kotlin {
             dependsOn(sharedJvmMain)
             dependencies {
                 compileOnly(libs.velocity.api)
-                compileOnly(nuvotifier)
+                compileOnly(libs.nuvotifier.velocity)
             }
         }
     }
-
-    coreLibrariesVersion = kotlinVersion
 }
 
 paper {
@@ -101,7 +93,7 @@ paper {
 velocity {
     name = "XaliVote"
     id = "xalivote"
-    main = "mcv.xalitoria.vote.XaliVoteVelocity"
+    main = "mcv.xalitoria.vote.XaliVote"
     author = "audizian"
     description = "Saves NuVotifier votes and dispatches reward commands on player login."
     relocateSources = true
@@ -111,7 +103,6 @@ velocity {
 }
 
 tasks {
-    // The shadow plugin is only applied so the loaders get written; each target's own jar is the plugin.
     named("shadowJar") { enabled = false }
     metadataProcessResources {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE

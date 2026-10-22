@@ -7,9 +7,9 @@ import net.xalitoria.vote.db.DatabaseManager.dbQuery
 import net.xalitoria.vote.db.repository.VoteRepository
 import net.xalitoria.vote.dispatchCommand
 import net.xalitoria.vote.resolveCommands
-import mcv.xalitoria.vote.XaliVoteVelocity
+import mcv.xalitoria.vote.XaliVote
 
-class JoinListener(private val plugin: XaliVoteVelocity) {
+class JoinListener(private val plugin: XaliVote) {
 
     @Subscribe
     fun onLogin(event: PostLoginEvent) {

@@ -18,7 +18,7 @@ import java.nio.file.Path
  * The real plugin, created by the loader the Gradle plugin generates (XaliVoteVelocityLoader) once the libraries are on the classpath.
  * [plugin] is the loader instance Velocity knows about, used for event registration.
  */
-class XaliVoteVelocity(
+class XaliVote(
     val server: ProxyServer,
     val logger: Logger,
     val dataDirectory: Path,
@@ -79,7 +79,7 @@ class XaliVoteVelocity(
     }
 
     companion object {
-        lateinit var INSTANCE: XaliVoteVelocity
+        lateinit var INSTANCE: XaliVote
             private set
     }
 }

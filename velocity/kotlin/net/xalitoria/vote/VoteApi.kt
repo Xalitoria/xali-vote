@@ -1,11 +1,11 @@
 package net.xalitoria.vote
 
-import mcv.xalitoria.vote.XaliVoteVelocity
+import mcv.xalitoria.vote.XaliVote
 
 actual fun isOnline(playerName: String): Boolean =
-    XaliVoteVelocity.INSTANCE.server.getPlayer(playerName).isPresent
+    XaliVote.INSTANCE.server.getPlayer(playerName).isPresent
 
 actual fun dispatchCommand(playerName: String, command: String) {
-    val player = XaliVoteVelocity.INSTANCE.server.getPlayer(playerName).orElse(null) ?: return
-    XaliVoteVelocity.INSTANCE.server.commandManager.executeAsync(player, command.withPlayer(playerName))
+    val player = XaliVote.INSTANCE.server.getPlayer(playerName).orElse(null) ?: return
+    XaliVote.INSTANCE.server.commandManager.executeAsync(player, command.withPlayer(playerName))
 }

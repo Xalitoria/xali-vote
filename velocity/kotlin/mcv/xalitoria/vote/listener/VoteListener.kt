@@ -9,9 +9,9 @@ import net.xalitoria.vote.db.repository.VoteRepository
 import net.xalitoria.vote.dispatchCommand
 import net.xalitoria.vote.isOnline
 import net.xalitoria.vote.resolveCommands
-import mcv.xalitoria.vote.XaliVoteVelocity
+import mcv.xalitoria.vote.XaliVote
 
-class VoteListener(private val plugin: XaliVoteVelocity) {
+class VoteListener(private val plugin: XaliVote) {
 
     @Subscribe
     fun onVote(event: VotifierEvent) {
