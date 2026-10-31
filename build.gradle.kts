@@ -26,12 +26,11 @@ kotlin {
             "-Xcontext-sensitive-resolution",
             "-Xcollection-literals",
             "-Xname-based-destructuring=complete",
-            //"-Xreturn-value-checker=full",
         )
     }
 
     sourceSets {
-        val commonMain by getting
+        val commonMain = getByName("commonMain")
 
         // What both platforms share: `common/`, and the libraries they download when the plugin loads.
         val sharedJvmMain by creating {
