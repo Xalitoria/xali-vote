@@ -3,6 +3,7 @@ import mc.xalitoria.gradle.RelativeLoad
 
 plugins {
     kotlin("multiplatform")
+    id("mc.xalitoria.conventions")
     kotlin("plugin.serialization")
     id("mc.xalitoria.minecraft")
     alias(libs.plugins.shadow)
