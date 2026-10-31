@@ -25,7 +25,7 @@ Copy the Paper jar into a server's `plugins` folder, or the Velocity jar into th
 
 `./gradlew :vote:installPaperPlugin` copies the Paper jar into `vote/run/plugins` for a dev server.
 
-The `paper { }` and `velocity { }` blocks in `vote/build.gradle.kts` come from the [Gradle plugin](../plugin/README.md).
+The `paper { }` and `velocity { }` blocks in `vote/build.gradle.kts` come from the [Gradle plugin](../xali-gradle/README.md).
 It writes the descriptors, and a loader for each platform that downloads the `api(...)` libraries when the plugin loads.
 The Velocity plugin is `mcv.xalitoria.vote.XaliVote`, created by the generated loader once its libraries are in.
 
@@ -117,5 +117,5 @@ The reward rules are in `RewardEngine.kt` (`resolveCommands`), a pure function t
 
 ## See also
 
-- [Gradle plugin](../plugin/README.md) — descriptors and loaders
+- [Gradle plugin](../xali-gradle/README.md) — descriptors and loaders
 - [NuVotifier](https://github.com/NuVotifier/NuVotifier) — the vote receiver
