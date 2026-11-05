@@ -42,11 +42,10 @@ The Velocity plugin is `mcv.xalitoria.vote.XaliVote`, created by the generated l
 
 | Key | Default | Meaning |
 |---|---|---|
-| `database.type` | `sqlite` | `sqlite` or `mysql`. `mariadb` is read as `mysql`. |
-| `database.tablePrefix` | `xalivote_` | Prepended to every table name. |
-| `database.serverName` | `default` | Name of this server. |
+| `database.type` | `sqlite` | `sqlite`, `mariadb` or `mysql`. Use `mariadb` for MariaDB: it has its own driver. |
+| `database.table-prefix` | `xalivote_` | Prepended to every table name: letters, digits and underscores. |
 | `database.sqlite.filename` | `vote.db` | The SQLite file. |
-| `database.mysql` | | `host`, `port`, `database`, `username`, `password`, `useSsl` and `poolSize`. |
+| `database.mysql` | | `host`, `port`, `database`, `username`, `password`, `use-ssl` and `pool-size`. |
 | `webhook.enabled` | `false` | Accept votes over HTTP as well, see [Webhook](#webhook). |
 | `webhook.port` | `8192` | The port the webhook listens on, on all interfaces. |
 | `webhook.secret` | empty | Shared secret the sender must give. Empty accepts anything. |
@@ -54,9 +53,10 @@ The Velocity plugin is `mcv.xalitoria.vote.XaliVote`, created by the generated l
 > [!NOTE]
 > If the database cannot be reached, the Paper plugin logs the error and disables itself.
 
-> [!WARNING]
-> Both `mysql` and `mariadb` use MySQL's Connector/J. It cannot read the metadata of MariaDB 11, which the other Xali
-> plugins avoid with MariaDB's own driver. Use MySQL or SQLite until XaliVote switches drivers.
+> [!NOTE]
+> The `database` section is the one the other Xali plugins use (`DatabaseConfig` in [util](../util/README.md)). Its keys
+> were `tablePrefix`, `useSsl` and `poolSize` before; a `config.yml` written by an older version has to be changed to the
+> names above, or its values are ignored and the defaults are used. `database.serverName` was never read and is gone.
 
 ### rewards.yml
 
