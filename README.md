@@ -14,10 +14,8 @@ for Velocity, built from shared code.
 
 ### Building and installing
 
-XaliVote is a Kotlin Multiplatform module with a JVM target for each platform, `jvm("paper")` and `jvm("velocity")`.
-
 ```console
-user $ ./gradlew :vote:paperJar :vote:velocityJar
+user $ ./gradlew :vote:paper:shadowJar :vote:velocity:shadowJar
 ```
 
 The jars are written to `build/libs/vote/` as `xali-vote-<version>-paper.jar` and `xali-vote-<version>-velocity.jar`.
@@ -27,7 +25,7 @@ Copy the Paper jar into a server's `plugins` folder, or the Velocity jar into th
 
 The `paper { }` and `velocity { }` blocks in `vote/build.gradle.kts` come from the [Gradle plugin](../xali-gradle/README.md).
 It writes the descriptors, and a loader for each platform that downloads the `api(...)` libraries when the plugin loads.
-The Velocity plugin is `mcv.xalitoria.vote.XaliVote`, created by the generated loader once its libraries are in.
+The Velocity plugin is `mc.xalitoria.vote.velocity.XaliVote`, created by the generated loader once its libraries are in.
 
 ## Configuration
 
@@ -109,9 +107,11 @@ The module has no tests yet. Jars are built into `build/libs/vote/`.
 
 | Directory | Package | Holds |
 |---|---|---|
-| `vote/common` | `net.xalitoria.vote` | The shared code: reward resolution, the database (Exposed) and the configuration classes. Platform differences are `expect` functions (`isOnline`, `dispatchCommand`). |
-| `vote/paper` | `mc.xalitoria.vote` | The Paper plugin, its listeners and the webhook (Ktor). |
-| `vote/velocity` | `mcv.xalitoria.vote` | The Velocity plugin and its listeners. |
+| `vote/common` | `com.xalitoria.vote` | The shared code: reward resolution, the database (Exposed) and the configuration classes. No platform API. |
+| `vote/paper` | `mc.xalitoria.vote.paper` | The Paper plugin, its listeners and the webhook (Ktor). |
+| `vote/velocity` | `mc.xalitoria.vote.velocity` | The Velocity plugin and its listeners. |
+
+The platform differences (`isOnline`, `dispatchCommand`) are methods of each platform's `XaliVote` class.
 
 The reward rules are in `RewardEngine.kt` (`resolveCommands`), a pure function that is cheap to cover with a test.
 

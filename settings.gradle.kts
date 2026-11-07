@@ -14,7 +14,6 @@ pluginManagement {
         val kotlinVersion = providers.gradleProperty("kotlin.version").get()
         kotlin("jvm") version kotlinVersion
         kotlin("plugin.serialization") version kotlinVersion
-        kotlin("multiplatform") version kotlinVersion
     }
     resolutionStrategy {
         eachPlugin {
@@ -41,3 +40,4 @@ plugins {
 }
 
 rootProject.name = "vote"
+include("common", "paper", "velocity")
