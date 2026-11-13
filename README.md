@@ -46,7 +46,7 @@ The Velocity plugin is `mc.xalitoria.vote.velocity.XaliVote`, created by the gen
 | `database.mysql` | | `host`, `port`, `database`, `username`, `password`, `use-ssl` and `pool-size`. |
 | `webhook.enabled` | `false` | Accept votes over HTTP as well, see [Webhook](#webhook). |
 | `webhook.port` | `8192` | The port the webhook listens on, on all interfaces. |
-| `webhook.secret` | empty | Shared secret the sender must give. Empty accepts anything. |
+| `webhook.secret` | empty | Shared secret the sender must give. Empty accepts anything, and the plugin says so in its log when it starts. |
 
 > [!NOTE]
 > If the database cannot be reached, the Paper plugin logs the error and disables itself.
@@ -63,7 +63,7 @@ Each entry has a name and says when it fires, for the player's all-time vote num
 | Key | Default | Meaning |
 |---|---|---|
 | `after` | `1` | The first vote number the entry fires on. |
-| `every` | `1` | Fires on every *every*-th vote from `after` on: when *n* >= `after` and (*n* - `after`) is a multiple of `every`. |
+| `every` | `1` | Fires on every *every*-th vote from `after` on: when *n* >= `after` and (*n* - `after`) is a multiple of `every`. Below 1 counts as 1. |
 | `commands` | none | Console commands. `{player}` is replaced with the player's name. |
 | `exclude` | none | Names of other entries. The entry does not fire when one of them fires on the same vote. |
 

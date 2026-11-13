@@ -1,18 +1,18 @@
 package com.xalitoria.vote.db
 
-import com.zaxxer.hikari.HikariConfig
-import com.zaxxer.hikari.HikariDataSource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import com.xalitoria.util.config.DatabaseConfig
 import com.xalitoria.util.config.databaseType
 import com.xalitoria.vote.db.tables.VoteCountTable
 import com.xalitoria.vote.db.tables.VoteTable
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
-import org.jetbrains.exposed.v1.migration.jdbc.MigrationUtils
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.migration.jdbc.MigrationUtils
 import java.io.File
 
 object DatabaseManager {

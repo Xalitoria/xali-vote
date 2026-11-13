@@ -12,4 +12,16 @@ dependencies {
     compileOnly(libs.bundles.exposed)
     compileOnly(libs.hikaricp)
     compileOnly(libs.xalicraft.util)
+
+    testImplementation(libs.kotlinx.coroutines)
+    testImplementation(libs.kotlinx.serialization)
+    testImplementation(libs.kaml)
+    testImplementation(libs.bundles.exposed)
+    testImplementation(libs.bundles.database)
+    testImplementation(libs.hikaricp)
+    testImplementation(libs.xalicraft.util)
+}
+
+tasks.test {
+    useJUnitPlatform()
 }

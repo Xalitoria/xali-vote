@@ -1,12 +1,12 @@
 package mc.xalitoria.vote.velocity.listener
 
-import com.vexsoftware.votifier.velocity.event.VotifierEvent
 import com.velocitypowered.api.event.Subscribe
-import kotlinx.coroutines.launch
+import com.vexsoftware.votifier.velocity.event.VotifierEvent
 import com.xalitoria.vote.db.DatabaseManager.dbQuery
 import com.xalitoria.vote.db.repository.VoteCountRepository
 import com.xalitoria.vote.db.repository.VoteRepository
 import com.xalitoria.vote.resolveCommands
+import kotlinx.coroutines.launch
 import mc.xalitoria.vote.velocity.XaliVote
 
 class VoteListener(private val plugin: XaliVote) {

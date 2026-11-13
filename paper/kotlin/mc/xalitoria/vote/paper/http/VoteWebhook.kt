@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mc.xalitoria.vote.paper.XaliVote
 import mc.xalitoria.vote.paper.listener.VoteListener
+import java.security.MessageDigest
 
 class VoteWebhook(private val plugin: XaliVote, private val voteListener: VoteListener) {
     @Serializable
@@ -35,7 +36,7 @@ class VoteWebhook(private val plugin: XaliVote, private val voteListener: VoteLi
                         return@post
                     }
                     val expectedSecret = plugin.voteConfig.webhook.secret
-                    if (expectedSecret.isNotEmpty() && payload.secret != expectedSecret) {
+                    if (expectedSecret.isNotEmpty() && !sameSecret(payload.secret, expectedSecret)) {
                         call.respond(HttpStatusCode.Unauthorized, "Bad secret")
                         return@post
                     }
@@ -49,6 +50,10 @@ class VoteWebhook(private val plugin: XaliVote, private val voteListener: VoteLi
     private fun processVote(playerName: String, serviceName: String, address: String) {
         plugin.scope.launch { voteListener.processVote(playerName, serviceName, address) }
     }
+
+    /** Compared in constant time, so the time a refusal takes does not tell how much of a guess was right. */
+    private fun sameSecret(given: String, expected: String): Boolean =
+        MessageDigest.isEqual(given.toByteArray(Charsets.UTF_8), expected.toByteArray(Charsets.UTF_8))
 
     fun stop() {
         server?.stop(1_000L, 5_000L)

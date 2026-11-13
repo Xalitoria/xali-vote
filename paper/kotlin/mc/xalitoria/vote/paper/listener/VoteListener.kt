@@ -1,14 +1,12 @@
 package mc.xalitoria.vote.paper.listener
 
 import com.vexsoftware.votifier.model.VotifierEvent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import com.xalitoria.vote.db.DatabaseManager.dbQuery
 import com.xalitoria.vote.db.repository.VoteCountRepository
 import com.xalitoria.vote.db.repository.VoteRepository
-import mc.xalitoria.vote.paper.XaliVote
 import com.xalitoria.vote.resolveCommands
+import kotlinx.coroutines.launch
+import mc.xalitoria.vote.paper.XaliVote
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
@@ -24,9 +22,7 @@ class VoteListener(private val plugin: XaliVote) : Listener {
         val voteNumber = dbQuery { VoteCountRepository.increment(playerName) }
         val commands = resolveCommands(voteNumber, plugin.rewardsConfig)
         if (plugin.isOnline(playerName)) {
-            withContext(Dispatchers.Main.immediate) {
-                commands.forEach { cmd -> plugin.dispatchCommand(playerName, cmd) }
-            }
+            commands.forEach { plugin.dispatchCommand(playerName, it) }
         } else {
             dbQuery { VoteRepository.save(playerName, serviceName, address, voteNumber) }
         }

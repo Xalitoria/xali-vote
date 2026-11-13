@@ -16,7 +16,7 @@ subprojects {
         "velocity" -> "mc.xalitoria.vote.velocity"
         else -> error("No group for $path")
     }
-    version = "0.1.0"
+    version = "0.2.0"
 }
 
 tasks.named("build") {

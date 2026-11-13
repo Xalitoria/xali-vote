@@ -1,14 +1,17 @@
 package mc.xalitoria.vote.paper
 
-import kotlinx.coroutines.*
-import kotlinx.serialization.builtins.MapSerializer
-import kotlinx.serialization.builtins.serializer
+import com.xalitoria.util.bukkit.coroutineScope
+import com.xalitoria.util.bukkit.runConsoleCommand
 import com.xalitoria.util.config.YamlFile
 import com.xalitoria.vote.config.RewardEntry
 import com.xalitoria.vote.config.VoteConfig
 import com.xalitoria.vote.db.DatabaseManager
 import com.xalitoria.vote.defaultRewardsConfig
 import com.xalitoria.vote.withPlayer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
 import mc.xalitoria.vote.paper.http.VoteWebhook
 import mc.xalitoria.vote.paper.listener.JoinListener
 import mc.xalitoria.vote.paper.listener.VoteListener
@@ -37,17 +40,13 @@ class XaliVote : JavaPlugin() {
     /** Whether a player with this exact name is online. */
     fun isOnline(playerName: String): Boolean = server.getPlayerExact(playerName) != null
 
-    /** Runs [command] as the console, with `{player}` replaced by [playerName]. */
+    /** Runs [command] as the console, with `{player}` replaced by [playerName]. Safe to call from any thread. */
     fun dispatchCommand(playerName: String, command: String) {
-        server.dispatchCommand(server.consoleSender, command.withPlayer(playerName))
+        runConsoleCommand(command.withPlayer(playerName))
     }
 
     override fun onEnable() {
-        scope = CoroutineScope(
-            SupervisorJob() + Dispatchers.Default + CoroutineExceptionHandler { _, t ->
-                logger.severe("Unhandled coroutine exception: ${t.message}")
-            }
-        )
+        scope = coroutineScope()
 
         configFile.load()
         rewardsConfigFile.load()
@@ -67,6 +66,9 @@ class XaliVote : JavaPlugin() {
         if (voteConfig.webhook.enabled) {
             webhook = VoteWebhook(this, voteListener).also { it.start(voteConfig.webhook.port) }
             logger.info("Webhook listening on port ${voteConfig.webhook.port}")
+            if (voteConfig.webhook.secret.isEmpty()) {
+                logger.warning("webhook.secret is empty, so anyone who can reach the port can queue votes")
+            }
         }
 
         logger.info("XaliVote enabled.")

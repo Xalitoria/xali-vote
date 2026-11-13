@@ -2,10 +2,10 @@ package mc.xalitoria.vote.velocity.listener
 
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.PostLoginEvent
-import kotlinx.coroutines.launch
 import com.xalitoria.vote.db.DatabaseManager.dbQuery
 import com.xalitoria.vote.db.repository.VoteRepository
 import com.xalitoria.vote.resolveCommands
+import kotlinx.coroutines.launch
 import mc.xalitoria.vote.velocity.XaliVote
 
 class JoinListener(private val plugin: XaliVote) {

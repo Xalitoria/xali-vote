@@ -1,15 +1,15 @@
 package mc.xalitoria.vote.velocity
 
 import com.velocitypowered.api.proxy.ProxyServer
-import kotlinx.coroutines.*
-import kotlinx.serialization.builtins.MapSerializer
-import kotlinx.serialization.builtins.serializer
 import com.xalitoria.util.config.YamlFile
 import com.xalitoria.vote.config.RewardEntry
 import com.xalitoria.vote.config.VoteConfig
 import com.xalitoria.vote.db.DatabaseManager
 import com.xalitoria.vote.defaultRewardsConfig
 import com.xalitoria.vote.withPlayer
+import kotlinx.coroutines.*
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
 import mc.xalitoria.vote.velocity.listener.JoinListener
 import mc.xalitoria.vote.velocity.listener.VoteListener
 import org.slf4j.Logger
@@ -45,10 +45,9 @@ class XaliVote(
     /** Whether a player with this exact name is online. */
     fun isOnline(playerName: String): Boolean = server.getPlayer(playerName).isPresent
 
-    /** Runs [command] with `{player}` replaced by [playerName], as that player; nothing happens if they are not online. */
+    /** Runs [command] as the console, with `{player}` replaced by [playerName]. */
     fun dispatchCommand(playerName: String, command: String) {
-        val player = server.getPlayer(playerName).orElse(null) ?: return
-        server.commandManager.executeAsync(player, command.withPlayer(playerName))
+        server.commandManager.executeAsync(server.consoleCommandSource, command.withPlayer(playerName))
     }
 
     /** Enables the plugin. */
