@@ -23,6 +23,9 @@ dependencies {
 
     compileOnly(libs.paper.api)
     compileOnly(libs.nuvotifier.universal)
+    compileOnly(libs.placeholderapi)
+    // XaliMenu provides this at run time (its jar carries the API), when it is installed and `menu.enabled` is on.
+    compileOnly(libs.xali.menu.api)
 }
 
 tasks {

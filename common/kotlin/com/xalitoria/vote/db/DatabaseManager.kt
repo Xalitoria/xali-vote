@@ -2,6 +2,7 @@ package com.xalitoria.vote.db
 
 import com.xalitoria.util.config.DatabaseConfig
 import com.xalitoria.util.config.databaseType
+import com.xalitoria.vote.db.tables.PartyTable
 import com.xalitoria.vote.db.tables.VoteCountTable
 import com.xalitoria.vote.db.tables.VoteTable
 import com.zaxxer.hikari.HikariConfig
@@ -53,7 +54,7 @@ object DatabaseManager {
 
         transaction(database) {
             MigrationUtils.statementsRequiredForDatabaseMigration(
-                VoteTable, VoteCountTable, withLogs = false,
+                VoteTable, VoteCountTable, PartyTable, withLogs = false,
             ).forEach { exec(it) }
         }
     }

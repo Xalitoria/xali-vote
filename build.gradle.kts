@@ -16,7 +16,7 @@ subprojects {
         "velocity" -> "mc.xalitoria.vote.velocity"
         else -> error("No group for $path")
     }
-    version = "0.2.0"
+    version = "0.3.0"
 }
 
 tasks.named("build") {
@@ -28,14 +28,20 @@ paper {
     main = "mc.xalitoria.vote.paper.XaliVote"
     apiVersion = "1.21"
     author = "audizian"
-    description = "Saves NuVotifier votes and dispatches reward commands on join."
+    description = "Saves NuVotifier votes, rewards them, runs vote parties and lists the vote links, with XaliMenu, XaliRedeem and PlaceholderAPI hooks."
     load = Load.POSTWORLD
+    foliaSupported = true
     relocateSources = true
     serverDependencies {
-        register("NuVotifier") {
+        register("Votifier") {
             load = RelativeLoad.BEFORE
             required = true
         }
+        register("PlaceholderAPI") { load = RelativeLoad.BEFORE; required = false }
+        // The menu's catalogs and action are registered while this plugin enables, so XaliMenu has to have enabled.
+        register("XaliMenu") { load = RelativeLoad.BEFORE; required = false }
+        // Only so that its commands exist by the time rewards run; nothing of it is loaded.
+        register("XaliRedeem") { load = RelativeLoad.BEFORE; required = false }
     }
 }
 
