@@ -1,5 +1,6 @@
 package mc.xalitoria.vote.paper.external
 
+import com.xalitoria.util.message.LocalizedPlaceholders
 import com.xalitoria.util.bukkit.runTask
 import com.xalitoria.vote.webAddress
 import mc.xalitoria.vote.paper.XaliVote
@@ -94,7 +95,7 @@ class MenuHook(private val plugin: XaliVote) {
         override fun run(ctx: MenuContext) {
             val address = webAddress(ctx.parse(url)) ?: return
             val label = ctx.parse(name).ifBlank { address.host }
-            val line = plugin.messages.linkOpened.replace("{url}", address.toString()).let { ctx.component(it) }
+            val line = LocalizedPlaceholders().with("url", address.toString()).fill(plugin.messages.linkOpened).let { ctx.component(it) }
             ctx.player.sendMessage(line.clickEvent(ClickEvent.openUrl(address.toString())))
             plugin.debug("${ctx.player.name} was sent the link $label")
         }

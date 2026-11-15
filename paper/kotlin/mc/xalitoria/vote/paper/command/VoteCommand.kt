@@ -3,6 +3,10 @@ package mc.xalitoria.vote.paper.command
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
+import com.xalitoria.util.message.LocalizedPlaceholders
+import com.xalitoria.util.message.fail
+import com.xalitoria.util.message.info
+import com.xalitoria.util.message.pass
 import com.xalitoria.util.message.send
 import com.xalitoria.util.message.toComponent
 import com.xalitoria.util.message.verbatim
@@ -23,7 +27,7 @@ import org.bukkit.entity.Player
  */
 class VoteCommand(private val plugin: XaliVote) {
     val label = "xalivote"
-    val aliases = listOf("vote", "votes", "xvote")
+    val aliases = listOf("vote", "xvote", "votes", "xvotes")
     val description = "Vote for the server"
 
     private val msg get() = plugin.messages
@@ -65,18 +69,18 @@ class VoteCommand(private val plugin: XaliVote) {
     private fun menu(sender: CommandSender) {
         val player = sender as? Player ?: return links(sender)
         if (plugin.menu?.openVote(player) != true) {
-            sender send msg.noMenu
+            sender info msg.noMenu
             links(sender)
         }
     }
 
     private fun links(sender: CommandSender) {
         val links = plugin.links
-        if (links.isEmpty()) return sender send msg.noLinks
+        if (links.isEmpty()) return sender fail msg.noLinks
         sender send msg.linksHeader
         for (link in links) {
-            val text = msg.linkLine.replace("{name}", link.name) + if (link.description.isBlank()) "" else msg.linkDescription.replace("{description}", link.description)
-            val hover = msg.linkHover.replace("{url}", link.url)
+            val text = fill(msg.linkLine, "name" to link.name) + if (link.description.isBlank()) "" else fill(msg.linkDescription, "description" to link.description)
+            val hover = fill(msg.linkHover, "url" to link.url)
             sender.sendMessage(
                 text.toComponent()
                     .clickEvent(ClickEvent.openUrl(link.url))
@@ -89,35 +93,37 @@ class VoteCommand(private val plugin: XaliVote) {
         val player = sender as? Player
         if (player != null && plugin.menu?.openTop(player) == true) return
         val places = plugin.board.top
-        if (places.isEmpty()) return sender send msg.topEmpty
+        if (places.isEmpty()) return sender info msg.topEmpty
         sender send msg.topHeader
         for (place in places) {
-            sender send msg.topLine.replace("{position}", place.position.toString()).replace("{name}", place.name.verbatim()).replace("{votes}", place.votes.toString())
+            sender send fill(msg.topLine, "position" to place.position, "name" to place.name.verbatim(), "votes" to place.votes)
         }
     }
 
     private fun party(sender: CommandSender) {
         val party = plugin.party
-        if (!party.enabled) return sender send msg.partyOff
+        if (!party.enabled) return sender info msg.partyOff
         val status = plugin.board.party
         sender send msg.partyHeader
-        sender send msg.partyProgress
-            .replace("{progress}", status.progress.toString())
-            .replace("{votes}", party.votes.toString())
-            .replace("{remaining}", (party.votes - status.progress).coerceAtLeast(0).toString())
-            .replace("{parties}", status.parties.toString())
+        sender send fill(
+            msg.partyProgress,
+            "progress" to status.progress,
+            "votes" to party.votes,
+            "remaining" to (party.votes - status.progress).coerceAtLeast(0),
+            "parties" to status.parties,
+        )
     }
 
     private fun stats(sender: CommandSender, name: String?) {
-        val target = name ?: (sender as? Player)?.name ?: return sender send msg.notPlayer
+        val target = name ?: (sender as? Player)?.name ?: return sender fail msg.notPlayer
         plugin.scope.launch {
             try {
                 val total = dbQuery { VoteCountRepository.total(target) }
-                if (total == 0L && name != null) sender send msg.unknownPlayer.replace("{name}", name.verbatim())
-                else sender send msg.votes.replace("{name}", target.verbatim()).replace("{votes}", total.toString())
+                if (total == 0L && name != null) sender fail fill(msg.unknownPlayer, "name" to name.verbatim())
+                else sender send fill(msg.votes, "name" to target.verbatim(), "votes" to total)
             } catch (e: Exception) {
                 plugin.logger.warning("Could not read the votes of $target: ${e.message}")
-                sender send msg.databaseFailed
+                sender fail msg.databaseFailed
             }
         }
     }
@@ -125,14 +131,19 @@ class VoteCommand(private val plugin: XaliVote) {
     private fun reload(sender: CommandSender) {
         try {
             plugin.reload()
-            sender send msg.reloaded
-                .replace("{links}", plugin.links.size.toString())
-                .replace("{party}", if (plugin.party.enabled) "every ${plugin.party.votes} votes" else "off")
-                .replace("{proxy}", if (plugin.proxyActive) "linked" else "not linked")
+            sender pass fill(
+                msg.reloaded,
+                "links" to plugin.links.size,
+                "party" to if (plugin.party.enabled) "every ${plugin.party.votes} votes" else "off",
+                "proxy" to if (plugin.proxyActive) "linked" else "not linked",
+            )
         } catch (e: Exception) {
-            sender send msg.reloadFailed.replace("{error}", e.message.orEmpty().verbatim())
+            sender fail fill(msg.reloadFailed, "error" to e.message.orEmpty().verbatim())
         }
     }
+
+    /** [template] with the values filled in: numbers are written grouped, and a template can pick a plural (`{votes|plural:vote,votes}`). */
+    private fun fill(template: String, vararg values: Pair<String, Any?>) = LocalizedPlaceholders().with(*values).fill(template)
 
     companion object {
         const val USE = "xalivote.use"

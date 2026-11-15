@@ -149,7 +149,7 @@ read as formatting.
 
 ### Commands
 
-`/xalivote`, also `/vote`, `/votes` and `/xvote`, on Paper.
+`/xalivote`, also `/vote`, `/xvote`, `/votes` and `/xvotes`, on Paper.
 
 | Command | Permission | Does |
 |---|---|---|
